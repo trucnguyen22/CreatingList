@@ -1,10 +1,39 @@
-let listItems = Array.from(document.querySelectorAll("#my-list li"));
+const Button = document.getElementById("InputButton");
+const Text = document.getElementById("TextInput");
+const List = document.getElementById("List");
 
-if (localStorage.getItem("listItems")) {
-  listItems = JSON.parse(localStorage.getItem("listItems"));
-}
+Button.addEventListener("click", () => {
+  const li = document.createElement("li");
+  const libutton = document.createElement("button");
 
-// Lưu trữ mảng vào LocalStorage khi reload lại trang
-window.addEventListener("beforeunload", () => {
-  localStorage.setItem("listItems", JSON.stringify(listItems));
+  libutton.textContent = "Delete";
+  li.textContent = Text.value;
+
+  libutton.addEventListener("click", () => {
+    li.remove();
+  });
+
+  li.append(libutton);
+  List.append(li);
+
+  Text.value = "";
+  console.log(List);
+});
+
+window.addEventListener("beforeunload", function (e) {
+  localStorage.setItem("StoredList", List.innerHTML);
+});
+
+window.addEventListener("load", () => {
+  const NewList = localStorage.getItem("StoredList");
+  if (NewList) {
+    List.innerHTML = NewList;
+    const ListItems = document.querySelectorAll("#List li");
+    ListItems.forEach((Item) => {
+      const libutton = Item.querySelector("button");
+      libutton.addEventListener("click", () => {
+        Item.remove();
+      });
+    });
+  }
 });
